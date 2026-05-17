@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import { Layout } from './components/Layout';
 import { HomePage } from './features/home/HomePage';
 import { ProductDetailPage } from './features/product-detail/ProductDetailPage';
+import { SignUpPage } from './features/sign-up/SignUpPage';
 
 type Route =
   | { name: 'home' }
-  | { name: 'product'; id: string };
+  | { name: 'product'; id: string }
+  | { name: 'signup' };
 
 function parseHash(hash: string): Route {
-  const match = hash.match(/^#\/product\/([^/?#]+)/);
-  if (match) return { name: 'product', id: decodeURIComponent(match[1]!) };
+  const productMatch = hash.match(/^#\/product\/([^/?#]+)/);
+  if (productMatch) return { name: 'product', id: decodeURIComponent(productMatch[1]!) };
+  if (hash === '#signup' || hash === '#/signup') return { name: 'signup' };
   return { name: 'home' };
 }
 
@@ -27,7 +30,13 @@ function App() {
 
   return (
     <Layout>
-      {route.name === 'product' ? <ProductDetailPage /> : <HomePage />}
+      {route.name === 'product' ? (
+        <ProductDetailPage />
+      ) : route.name === 'signup' ? (
+        <SignUpPage />
+      ) : (
+        <HomePage />
+      )}
     </Layout>
   );
 }

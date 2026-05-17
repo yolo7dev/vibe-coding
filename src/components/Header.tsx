@@ -1,13 +1,24 @@
+import { useEffect, useState } from 'react';
 import { CartIcon, HeartIcon, SearchIcon } from './icons';
 
 const navItems = [
-  { href: '#home', label: 'Home', active: true },
+  { href: '#home', label: 'Home' },
   { href: '#contact', label: 'Contact' },
   { href: '#about', label: 'About' },
   { href: '#signup', label: 'Sign Up' },
 ];
 
 export function Header() {
+  const [hash, setHash] = useState(() => window.location.hash || '#home');
+
+  useEffect(() => {
+    function update() {
+      setHash(window.location.hash || '#home');
+    }
+    window.addEventListener('hashchange', update);
+    return () => window.removeEventListener('hashchange', update);
+  }, []);
+
   return (
     <header className="border-b border-line">
       <div className="mx-auto flex h-20 max-w-screen-2xl items-center justify-between gap-10 px-8">
@@ -17,18 +28,21 @@ export function Header() {
 
         <nav>
           <ul className="flex items-center gap-12 text-base">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className={`relative pb-1 ${
-                    item.active ? 'after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-ink/40' : ''
-                  } hover:text-brand`}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
+            {navItems.map((item) => {
+              const active = hash === item.href;
+              return (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    className={`relative pb-1 ${
+                      active ? 'after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-ink/40' : ''
+                    } hover:text-brand`}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
