@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Figma__get_screenshot",
+      "mcp__claude_ai_Figma__get_metadata",
+      "Bash(git mv *)",
+      "Bash(npm run *)",
+      "Bash(echo \"lint exit=$?\")",
+      "Bash(echo \"build exit=$?\")"
+    ]
+  }
+}
