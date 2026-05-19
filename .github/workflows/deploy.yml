@@ -42,7 +42,17 @@ jobs:
         port: ${{ secrets.VPS_PORT || 22 }}
         script: |
           set -euo pipefail
-          export PATH="$HOME/.npm-global/bin:/usr/local/bin:$PATH"
+
+          # Non-interactive SSH skips ~/.bashrc, so nvm-installed Node is not on PATH.
+          # Source nvm if present, then fall back to common system-wide install paths.
+          export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          export PATH="$HOME/.npm-global/bin:/usr/local/bin:/usr/bin:$PATH"
+
+          command -v node >/dev/null || { echo "node not found on PATH"; exit 127; }
+          command -v npm  >/dev/null || { echo "npm not found on PATH";  exit 127; }
+          command -v pm2  >/dev/null || { echo "pm2 not found on PATH (run: npm i -g pm2 serve)"; exit 127; }
+          echo "node $(node -v) / npm $(npm -v) / pm2 $(pm2 -v)"
 
           APP_PATH="${{ secrets.VPS_APP_PATH }}"
           APP_NAME="${{ secrets.PM2_APP_NAME || 'vibe-coding' }}"
